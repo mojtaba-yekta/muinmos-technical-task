@@ -40,19 +40,19 @@
         /// </summary>
         private void GenerateNewLogFile()
         {
-            lock (_lock)
-            {
-                if (!Directory.Exists(LOG_FOLDER)) Directory.CreateDirectory(LOG_FOLDER);
+            //I don't use lock here
+            //because the method is called inside ctor or log method which has a lock statement
 
-                //add Guid at the end of the file name to ensure the file name will be unique
-                _filePath = $"{LOG_FOLDER}/" +
-                    $"{LOG_FILE_NAME}-" +
-                    $"{DateTime.UtcNow.ToString("yyyy-MM-dd-HH-mm-ss-fff")}-" +
-                    $"{Guid.NewGuid()}{LOG_FILE_EXT}";
+            if (!Directory.Exists(LOG_FOLDER)) Directory.CreateDirectory(LOG_FOLDER);
 
-                //create the file and close it, therefore other threads can use it.
-                File.WriteAllText(_filePath, "");
-            }
+            //add Guid at the end of the file name to ensure the file name will be unique
+            _filePath = $"{LOG_FOLDER}/" +
+                $"{LOG_FILE_NAME}-" +
+                $"{DateTime.UtcNow.ToString("yyyy-MM-dd-HH-mm-ss-fff")}-" +
+                $"{Guid.NewGuid()}{LOG_FILE_EXT}";
+
+            //create the file and close it, therefore other threads can use it.
+            File.WriteAllText(_filePath, "");
         }
 
         /// <summary>
@@ -62,10 +62,10 @@
         /// </summary>
         private void ResetIndex()
         {
-            lock (_lock)
-            {
-                _currentIndex = 0;
-            }
+            //I don't use lock here
+            //because the method is called inside ctor or log method which has a lock statement
+
+            _currentIndex = 0;
         }
         #endregion
 
