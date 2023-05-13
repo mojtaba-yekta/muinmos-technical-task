@@ -41,7 +41,7 @@
         private void GenerateNewLogFile()
         {
             //I don't use lock here
-            //because the method is called inside ctor or log method which has a lock statement
+            //because the method is called inside ctor or log method which already has a lock statement
 
             if (!Directory.Exists(LOG_FOLDER)) Directory.CreateDirectory(LOG_FOLDER);
 
@@ -63,7 +63,7 @@
         private void ResetIndex()
         {
             //I don't use lock here
-            //because the method is called inside ctor or log method which has a lock statement
+            //because the method is called inside ctor, log, or flush method which already has a lock statement
 
             _currentIndex = 0;
         }
@@ -95,12 +95,11 @@
         {
             lock (_lock)
             {
-                using (StreamWriter writer = new StreamWriter(_filePath, true))
-                {
-                    int c = 0;
-                    while (c < _currentIndex)
-                        writer.WriteLine(_buffer[c++]);
-                }
+                if (_currentIndex > 0)
+                    using (StreamWriter writer = new StreamWriter(_filePath, true))
+                        for (int i = 0; i < _currentIndex; i++)
+                            writer.WriteLine(_buffer[i]);
+                ResetIndex();
             }
         }
         #endregion

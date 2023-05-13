@@ -12,3 +12,8 @@ Task.Run(() => { for (int i = 0; i < 500; i++) mLogger.Log($"Caller 6: Log extra
 Task.Delay(10000).Wait(); // Just for Test: wait to make sure all threads completed.
 
 mLogger.Flush();
+mLogger.Flush();
+
+for (int i = 0; i < 500; i++) mLogger.Log($"Caller 7: Log extra message after flush {i}");
+
+mLogger.Flush();
